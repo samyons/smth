@@ -46,37 +46,7 @@
         setTimeout(checkLoader, 100);
       };
       
-      checkLoader();
-    });
-  }
-
-  function waitForLoaderToStart(timeout = 5000) {
-    return new Promise((resolve) => {
-      const loader = document.getElementById('load_list_myTransactionGrid');
-      if (!loader) {
-        resolve();
-        return;
-      }
-
-      const startTime = Date.now();
-      
-      const checkLoader = () => {
-        const isVisible = loader.style.display === 'block';
-        
-        if (isVisible) {
-          resolve();
-          return;
-        }
-        
-        if (Date.now() - startTime > timeout) {
-          resolve();
-          return;
-        }
-        
-        setTimeout(checkLoader, 50);
-      };
-      
-      checkLoader();
+      setTimeout(() => checkLoader(), 100);
     });
   }
 
@@ -118,16 +88,16 @@
       fromDateField.focus();
       fromDateField.dispatchEvent(new Event('input', { bubbles: true }));
       fromDateField.dispatchEvent(new Event('change', { bubbles: true }));
+      await new Promise(resolve => setTimeout(resolve, 100));
       document.body.focus();
-      
       await new Promise(resolve => setTimeout(resolve, 100));
       
       toDateField.value = formattedDate;
       toDateField.focus();
       toDateField.dispatchEvent(new Event('input', { bubbles: true }));
       toDateField.dispatchEvent(new Event('change', { bubbles: true }));
+      await new Promise(resolve => setTimeout(resolve, 100));
       document.body.focus();
-      
       await new Promise(resolve => setTimeout(resolve, 100));
       
       msisdnField.value = clipboardText.trim();
@@ -136,11 +106,8 @@
       msisdnField.dispatchEvent(new Event('change', { bubbles: true }));
       document.body.focus();
 
-      await new Promise(resolve => setTimeout(resolve, 100));
-
       submitBtn.click();
 
-      await waitForLoaderToStart();
       await waitForLoaderToFinish();
 
       const targetRow = document.getElementById('1');
