@@ -27,8 +27,14 @@
   "content_scripts": [
     {
       "matches": ["*://newsnoc/*"],
-      "js": ["content.js"],
+      "js": ["content.js", "inject-loader.js"],
       "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["inject.js"],
+      "matches": ["*://newsnoc/*"]
     }
   ],
   "host_permissions": [

@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "ALLINONE",
+  "version": "0.1",
+  "description": "iykyk",
+  "permissions": [
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://newsnoc/uiSNOC/main/service?cat=viewTaskPage_cs"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://newsnoc/uiSNOC/main/service?cat=viewTaskPage_cs"],
+      "js": ["do.js"],
+      "run_at": "document_end"
+    }
+  ],
+"web_accessible_resources": [
+    {
+      "resources": ["i.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
