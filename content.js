@@ -118,19 +118,25 @@
       fromDateField.focus();
       fromDateField.dispatchEvent(new Event('input', { bubbles: true }));
       fromDateField.dispatchEvent(new Event('change', { bubbles: true }));
-      fromDateField.blur();
-
+      document.body.focus();
+      
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       toDateField.value = formattedDate;
       toDateField.focus();
       toDateField.dispatchEvent(new Event('input', { bubbles: true }));
       toDateField.dispatchEvent(new Event('change', { bubbles: true }));
-      toDateField.blur();
-
+      document.body.focus();
+      
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       msisdnField.value = clipboardText.trim();
       msisdnField.focus();
       msisdnField.dispatchEvent(new Event('input', { bubbles: true }));
       msisdnField.dispatchEvent(new Event('change', { bubbles: true }));
-      msisdnField.blur();
+      document.body.focus();
+
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       submitBtn.click();
 
@@ -154,14 +160,20 @@
       const onclickValue = actionCell.getAttribute('onclick');
       
       if (onclickValue) {
-        const fn = new Function(onclickValue);
-        fn.call(actionCell);
+        try {
+          eval(onclickValue);
+        } catch (e) {
+          actionCell.click();
+        }
       } else {
         const clickableElement = actionCell.querySelector('[onclick]');
         if (clickableElement) {
           const innerOnclick = clickableElement.getAttribute('onclick');
-          const fn = new Function(innerOnclick);
-          fn.call(clickableElement);
+          try {
+            eval(innerOnclick);
+          } catch (e) {
+            clickableElement.click();
+          }
         } else {
           actionCell.click();
         }
