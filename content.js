@@ -2,14 +2,21 @@
   const REQUIRED_PATH = '/uiSNOC/main/service';
   const REQUIRED_PARAM = 'cat=viewTransaction_cs';
   
+  console.log('SNOC Helper: Script chargé sur:', window.location.href);
+  console.log('SNOC Helper: pathname:', window.location.pathname);
+  console.log('SNOC Helper: search:', window.location.search);
+  
   function isCorrectPage() {
     return window.location.pathname.includes(REQUIRED_PATH) && 
            window.location.search.includes(REQUIRED_PARAM);
   }
 
   if (!isCorrectPage()) {
+    console.log('SNOC Helper: Page incorrecte, script non chargé');
     return;
   }
+  
+  console.log('SNOC Helper: Page correcte, script chargé');
 
   function formatDateToDDMMYYYY(dateStr) {
     const [year, month, day] = dateStr.split('-');
@@ -22,24 +29,26 @@
 
   function waitForLoaderToFinish(timeout = 30000) {
     return new Promise((resolve, reject) => {
-      const loader = document.getElementById('load_list_myTransactionGrid');
-      if (!loader) {
-        console.log('SNOC Helper: Loader non trouvé');
-        resolve();
-        return;
-      }
-
       const startTime = Date.now();
       let loaderHasAppeared = false;
       const maxWaitForAppearance = 2000;
       
-      console.log('SNOC Helper: État initial du loader:', loader.style.display);
-      
       const checkLoader = () => {
         const elapsed = Date.now() - startTime;
+        const loader = document.getElementById('load_list_myTransactionGrid');
         
         if (elapsed > timeout) {
           reject(new Error('Timeout: le chargement a pris trop de temps'));
+          return;
+        }
+
+        if (!loader) {
+          if (!loaderHasAppeared && elapsed > maxWaitForAppearance) {
+            console.log('SNOC Helper: Loader jamais trouvé, on continue');
+            resolve();
+            return;
+          }
+          setTimeout(checkLoader, 100);
           return;
         }
 
@@ -149,6 +158,8 @@
       }
 
       console.log('SNOC Helper: Loader terminé, recherche de la ligne');
+
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       const targetRow = document.getElementById('1');
       
