@@ -29,7 +29,7 @@
       }
 
       const startTime = Date.now();
-      const initialDisplay = loader.style.display;
+      let loaderHasAppeared = false;
       
       const checkLoader = () => {
         if (Date.now() - startTime > timeout) {
@@ -39,31 +39,13 @@
 
         const currentDisplay = loader.style.display;
         
-        if (initialDisplay === 'block') {
-          if (currentDisplay === 'none' || currentDisplay === '') {
-            resolve();
-            return;
-          }
-        } else {
-          if (currentDisplay === 'block') {
-            setTimeout(() => {
-              const checkFinal = () => {
-                if (Date.now() - startTime > timeout) {
-                  reject(new Error('Timeout: le chargement a pris trop de temps'));
-                  return;
-                }
-                
-                if (loader.style.display === 'none' || loader.style.display === '') {
-                  resolve();
-                  return;
-                }
-                
-                setTimeout(checkFinal, 100);
-              };
-              checkFinal();
-            }, 100);
-            return;
-          }
+        if (currentDisplay === 'block') {
+          loaderHasAppeared = true;
+        }
+        
+        if (loaderHasAppeared && (currentDisplay === 'none' || currentDisplay === '')) {
+          resolve();
+          return;
         }
         
         setTimeout(checkLoader, 100);
@@ -146,24 +128,31 @@
       const targetRow = document.getElementById('1');
       
       if (!targetRow) {
+        console.log('SNOC Helper: Aucune ligne trouvée');
         return;
       }
 
       const actionCell = targetRow.querySelector('td[aria-describedby="list_myTransactionGrid_Actions"]');
       
       if (!actionCell) {
+        console.log('SNOC Helper: Cellule action introuvable');
         return;
       }
+
+      console.log('SNOC Helper: Cellule action trouvée, tentative de clic');
 
       const onclickValue = actionCell.getAttribute('onclick');
       
       if (onclickValue) {
+        console.log('SNOC Helper: onclick trouvé sur cellule:', onclickValue);
         actionCell.click();
       } else {
         const clickableElement = actionCell.querySelector('[onclick]');
         if (clickableElement) {
+          console.log('SNOC Helper: onclick trouvé sur élément enfant');
           clickableElement.click();
         } else {
+          console.log('SNOC Helper: Aucun onclick trouvé, clic direct sur cellule');
           actionCell.click();
         }
       }
