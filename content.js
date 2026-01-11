@@ -115,12 +115,22 @@
       }
 
       fromDateField.value = formattedDate;
-      toDateField.value = formattedDate;
-      msisdnField.value = clipboardText.trim();
-
+      fromDateField.focus();
+      fromDateField.dispatchEvent(new Event('input', { bubbles: true }));
       fromDateField.dispatchEvent(new Event('change', { bubbles: true }));
+      fromDateField.blur();
+
+      toDateField.value = formattedDate;
+      toDateField.focus();
+      toDateField.dispatchEvent(new Event('input', { bubbles: true }));
       toDateField.dispatchEvent(new Event('change', { bubbles: true }));
+      toDateField.blur();
+
+      msisdnField.value = clipboardText.trim();
+      msisdnField.focus();
+      msisdnField.dispatchEvent(new Event('input', { bubbles: true }));
       msisdnField.dispatchEvent(new Event('change', { bubbles: true }));
+      msisdnField.blur();
 
       submitBtn.click();
 
