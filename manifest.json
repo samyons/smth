@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "description": "Automatise la recherche de transactions sur SNOC",
   "permissions": [
-    "storage",
     "clipboardRead",
     "activeTab"
   ],

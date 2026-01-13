@@ -18,11 +18,6 @@
   
   console.log('SNOC Helper: Page correcte, script chargé');
 
-  function formatDateToDDMMYYYY(dateStr) {
-    const [year, month, day] = dateStr.split('-');
-    return `${day}-${month}-${year}`;
-  }
-
   function showAlert(message) {
     alert(`SNOC Helper: ${message}`);
   }
@@ -84,13 +79,6 @@
     try {
       console.log('SNOC Helper: Début de l\'exécution');
       
-      const result = await chrome.storage.sync.get(['snocDate']);
-      
-      if (!result.snocDate) {
-        showAlert('Date non configurée. Cliquez sur l\'extension pour définir une date.');
-        return;
-      }
-
       let clipboardText = '';
       try {
         clipboardText = await navigator.clipboard.readText();
@@ -104,7 +92,23 @@
         return;
       }
 
-      const formattedDate = formatDateToDDMMYYYY(result.snocDate);
+      const parts = clipboardText.trim().split(/\s+/);
+      if (parts.length < 2) {
+        showAlert('Format presse-papier invalide. Attendu: YYYY-MM-DD MSISDN');
+        return;
+      }
+
+      const rawDate = parts[0];
+      const msisdn = parts[1];
+
+      let formattedDate = rawDate;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(rawDate)) {
+        const [year, month, day] = rawDate.split('-');
+        formattedDate = `${day}-${month}-${year}`;
+      } else {
+        showAlert('Format de date invalide dans le presse-papier. Attendu: YYYY-MM-DD');
+        return;
+      }
 
       const fromDateField = document.getElementById('from_date');
       const toDateField = document.getElementById('to_date');
@@ -140,7 +144,7 @@
       
       document.body.focus();
       
-      msisdnField.value = clipboardText.trim();
+      msisdnField.value = msisdn;
       msisdnField.dispatchEvent(new Event('input', { bubbles: true }));
       msisdnField.dispatchEvent(new Event('change', { bubbles: true }));
 
