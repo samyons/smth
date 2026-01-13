@@ -203,10 +203,11 @@
   }
 
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log('SNOC Helper: Message reçu', request);
     if (request.action === 'executeSearch') {
       executeSearch();
       sendResponse({ status: 'started' });
     }
-    return true;
+    return false;
   });
 })();
